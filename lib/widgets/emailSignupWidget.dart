@@ -152,14 +152,15 @@ class _EmailSignupState extends State<EmailSignup> {
                                 child: Text("Submit"),
                                 onPressed: () async {
                                   if (_formKey.currentState!.validate()) {
-                                    print('valid');
                                     bool res =
                                         await user.signUp(_email!, _password!);
-                                    if (res)
-                                      Navigator.pushReplacementNamed(
-                                          context, '/personal-information',
-                                          arguments: {"user": user});
-                                    else
+                                    if (res) {
+                                      // print("successfully signed in.");
+                                      Navigator.of(context).pop();
+                                      // Navigator.pushReplacementNamed(
+                                      //     context, '/personal-information',
+                                      //     arguments: {"user": user});
+                                    } else
                                       showDialog(
                                         context: context,
                                         builder: (BuildContext context) =>

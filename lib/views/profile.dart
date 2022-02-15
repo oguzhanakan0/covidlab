@@ -28,9 +28,8 @@ class _ProfileState extends State<Profile> {
             case Status.Authenticating:
               return Center(child: CircularProgressIndicator());
             case Status.Authenticated:
-              print(userRepository.dbUser!);
-              return SignedInWidget(
-                  userRepository: userRepository); // user.user
+              print("AUTHENTICATED\n\n");
+              return SignedInWidget(userRepository: userRepository);
             default:
               return Center(child: Text('uninitalized'));
           }

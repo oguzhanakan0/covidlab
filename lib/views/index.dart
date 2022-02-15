@@ -25,7 +25,6 @@ class _IndexState extends State<Index> {
         "/": (context) => Profile(),
         "/email-signup": (context) => EmailSignup(),
         "/email-signin": (context) => EmailSignin(),
-        "/personal-information": (context) => PersonalInformationWidget(),
       },
     ),
   ];

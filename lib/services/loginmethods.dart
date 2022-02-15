@@ -155,7 +155,8 @@ class UserRepository with ChangeNotifier {
     final idToken = await _user!.getIdToken();
     Response r =
         await sendPost(url: SIGN_IN_URL, body: json.encode({"token": idToken}));
-    print(json.decode(r.body));
+    print("response received.");
+    // print(json.decode(r.body)); # Debug
     return json.decode(r.body);
   }
 
@@ -181,10 +182,11 @@ class UserRepository with ChangeNotifier {
     notifyListeners();
   }
 
-  set setdbUser(dynamic user) => dbUser;
-  // void setdbUser(decode) {
-
-  // }
+  // set setdbUser(dynamic user) => dbUser;
+  void setdbUser(dynamic user) {
+    _dbUser = user;
+    notifyListeners();
+  }
 }
 
 // Future<dynamic> signInWithEmailAndPassword(String email, String password) async {

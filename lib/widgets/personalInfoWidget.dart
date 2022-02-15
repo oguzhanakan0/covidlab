@@ -9,8 +9,9 @@ import 'package:covidlab/services/requests.dart';
 import 'package:covidlab/variables/urls.dart';
 
 class PersonalInformationWidget extends StatefulWidget {
-  PersonalInformationWidget({Key? key, UserRepository? userRepository})
+  PersonalInformationWidget({Key? key, required this.userRepository})
       : super(key: key);
+  final UserRepository userRepository;
 
   @override
   PersonalInformationWidgetState createState() =>
@@ -27,12 +28,16 @@ class PersonalInformationWidgetState extends State<PersonalInformationWidget> {
   String? _first_name;
   String? _last_name;
 
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    UserRepository userRepository =
-        (ModalRoute.of(context)!.settings.arguments as Map)['user'];
+    assert(widget.userRepository.dbUser != null);
     return Scaffold(
         appBar: CupertinoNavigationBar(
+          automaticallyImplyLeading: false,
           middle: Text('Complete Information'),
         ),
         body: SafeArea(
@@ -53,8 +58,9 @@ class PersonalInformationWidgetState extends State<PersonalInformationWidget> {
                           Text(
                             'Welcome, ' +
                                 (_username ??
-                                    userRepository.dbUser!["email"]
-                                        .split('@')[0]),
+                                    widget.userRepository.dbUser!["email"]
+                                        .split('@')[0] ??
+                                    " unknown"),
                             style: Theme.of(context).textTheme.headline3,
                           ),
                           Container(
@@ -78,8 +84,8 @@ class PersonalInformationWidgetState extends State<PersonalInformationWidget> {
                                             _username = value;
                                           });
                                         },
-                                        initialValue: userRepository
-                                            .dbUser!["email"]
+                                        initialValue: widget
+                                            .userRepository.dbUser!["email"]
                                             .split('@')[0])),
                               ]),
                           CupertinoFormSection(
@@ -89,7 +95,7 @@ class PersonalInformationWidgetState extends State<PersonalInformationWidget> {
                                     prefix: SizedBox(
                                         width: 120, child: Text("First Name")),
                                     child: CupertinoTextFormFieldRow(
-                                      initialValue: userRepository
+                                      initialValue: widget.userRepository
                                               .dbUser!["first_name"] ??
                                           '',
                                       placeholder: 'Oguzhan',
@@ -103,9 +109,9 @@ class PersonalInformationWidgetState extends State<PersonalInformationWidget> {
                                     prefix: SizedBox(
                                         width: 120, child: Text("Last Name")),
                                     child: CupertinoTextFormFieldRow(
-                                      initialValue:
-                                          userRepository.dbUser!["last_name"] ??
-                                              '',
+                                      initialValue: widget.userRepository
+                                              .dbUser!["last_name"] ??
+                                          '',
                                       placeholder: 'Akan',
                                       onChanged: (value) {
                                         setState(() {
@@ -173,16 +179,17 @@ class PersonalInformationWidgetState extends State<PersonalInformationWidget> {
                                         Response res = await sendPost(
                                             url: UPDATE_USER_URL,
                                             body: jsonEncode({
-                                              "uid": userRepository.user!.uid,
+                                              "uid": widget
+                                                  .userRepository.user!.uid,
                                               "username": _username ??
-                                                  userRepository
+                                                  widget.userRepository
                                                       .dbUser!["email"]
                                                       .split('@')[0],
                                               "first_name": _first_name ??
-                                                  userRepository
+                                                  widget.userRepository
                                                       .dbUser!["first_name"],
                                               "last_name": _last_name ??
-                                                  userRepository
+                                                  widget.userRepository
                                                       .dbUser!["last_name"],
                                               "birth_date": _birth_date == null
                                                   ? null
@@ -192,9 +199,10 @@ class PersonalInformationWidgetState extends State<PersonalInformationWidget> {
                                         print("response:");
                                         print(json.decode(res.body));
                                         if (json.decode(res.body)["success"]) {
-                                          userRepository.setdbUser =
-                                              json.decode(res.body)["user"];
+                                          widget.userRepository.setdbUser(
+                                              json.decode(res.body)["user"]);
                                           print("updated successfully.");
+
                                           Navigator.of(context).pop();
                                         }
                                       }

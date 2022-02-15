@@ -1,3 +1,4 @@
+import 'package:covidlab/widgets/personalInfoWidget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -23,14 +24,15 @@ class _SignedInWidgetState extends State<SignedInWidget> {
 
   @override
   Widget build(BuildContext context) {
-    String displayName = userRepository!.dbUser!["first_name"] +
-            " " +
-            userRepository!.dbUser!["last_name"] ??
-        userRepository!.dbUser!["email"];
+    String displayName = (userRepository!.dbUser!["first_name"] ??
+            "" + " - " + userRepository!.dbUser!["last_name"] ??
+            "") ??
+        userRepository!.dbUser!["email"] ??
+        "asda";
     String? photoUrl = userRepository!.user!.photoURL;
     String? providerId;
     FaIcon? icon;
-    print(userRepository!.user!.providerData[0]);
+    print(userRepository!.user!.providerData);
     switch (userRepository!.user!.providerData[0].providerId) {
       case "facebook.com":
         providerId = 'Facebook';
@@ -64,7 +66,7 @@ class _SignedInWidgetState extends State<SignedInWidget> {
         providerId = "";
         break;
     }
-    print(userRepository!.user!.providerData);
+    // print(userRepository!.user!.providerData);
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
@@ -114,8 +116,8 @@ class _SignedInWidgetState extends State<SignedInWidget> {
                 letterSpacing: 1,
                 color: Theme.of(context).primaryColorDark),
           ),
-          onTap: () {
-            Provider.of<UserRepository>(context, listen: false).signOut();
+          onTap: () async {
+            await Provider.of<UserRepository>(context, listen: false).signOut();
           },
         )
       ],
@@ -124,9 +126,17 @@ class _SignedInWidgetState extends State<SignedInWidget> {
 
   onAfterBuild(BuildContext context) async {
     if (!userRepository!.dbUser!["is_info_complete"]) {
-      print("pushing");
-      Navigator.of(context).pushNamed('/personal-information',
-          arguments: {"user": userRepository});
+      print("User's info not complete!: ");
+      print(userRepository!.dbUser!);
+      print("pushing complete info page..");
+      // Navigator.of(context).pushNamed('/personal-information', arguments: {"user": userRepository});
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+                PersonalInformationWidget(userRepository: userRepository!)),
+      );
     }
   }
 }
