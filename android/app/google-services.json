@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "152099723309",
+    "project_id": "iquit-507f7",
+    "storage_bucket": "iquit-507f7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:152099723309:android:54d0e3db42517a2187c0a4",
+        "android_client_info": {
+          "package_name": "com.covidlab.android"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "152099723309-dlcc7beeic8shjarp1io72kgv93ub73b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBa-fX9_i6xhtnZVoOWnXP9FL8rg1KuF-Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "152099723309-dlcc7beeic8shjarp1io72kgv93ub73b.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "152099723309-9jkfto78tr56plean2v1vshlhd3fdk5v.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.iquit.ios"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
