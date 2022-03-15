@@ -7,8 +7,7 @@ import 'package:covidlab/services/loginmethods.dart';
 
 class SignedInWidget extends StatefulWidget {
   // SignedInWidget({Key? key}) : super(key: key);
-  SignedInWidget({Key? key, this.userRepository}) : super(key: key);
-  final UserRepository? userRepository;
+  SignedInWidget({Key? key}) : super(key: key);
 
   @override
   _SignedInWidgetState createState() => _SignedInWidgetState();
@@ -18,17 +17,15 @@ class _SignedInWidgetState extends State<SignedInWidget> {
   UserRepository? userRepository;
   void initState() {
     super.initState();
-    userRepository = widget.userRepository;
     WidgetsBinding.instance!.addPostFrameCallback((_) => onAfterBuild(context));
   }
 
   @override
   Widget build(BuildContext context) {
-    String displayName = (userRepository!.dbUser!["first_name"] ??
-            "" + " - " + userRepository!.dbUser!["last_name"] ??
-            "") ??
-        userRepository!.dbUser!["email"] ??
-        "asda";
+    userRepository = Provider.of<UserRepository>(context);
+    print("dbUser");
+    print(userRepository!.dbUser!);
+    String displayName = userRepository!.user!.displayName!;
     String? photoUrl = userRepository!.user!.photoURL;
     String? providerId;
     FaIcon? icon;

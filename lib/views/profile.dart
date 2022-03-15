@@ -7,7 +7,6 @@ import 'package:covidlab/widgets/signinWidget.dart';
 
 class Profile extends StatefulWidget {
   Profile({Key? key}) : super(key: key);
-
   @override
   _ProfileState createState() => _ProfileState();
 }
@@ -15,26 +14,6 @@ class Profile extends StatefulWidget {
 class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
-        child: ChangeNotifierProvider(
-      create: (_) => UserRepository.instance(),
-      child: Consumer(
-        builder: (context, UserRepository userRepository, _) {
-          switch (userRepository.status) {
-            case Status.Uninitialized:
-              return Center(child: CircularProgressIndicator());
-            case Status.Unauthenticated:
-              return SigninWidget();
-            case Status.Authenticating:
-              return Center(child: CircularProgressIndicator());
-            case Status.Authenticated:
-              print("AUTHENTICATED\n\n");
-              return SignedInWidget(userRepository: userRepository);
-            default:
-              return Center(child: Text('uninitalized'));
-          }
-        },
-      ),
-    ));
+    return CupertinoPageScaffold(child: SignedInWidget());
   }
 }

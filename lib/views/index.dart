@@ -1,4 +1,4 @@
-import 'package:covidlab/views/add.dart';
+import 'package:covidlab/views/notifications.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:covidlab/views/home.dart';
@@ -22,7 +22,7 @@ class _IndexState extends State<Index> {
     ),
     CupertinoTabView(
       routes: {
-        "/": (context) => AddAppointment(),
+        "/": (context) => NotificationsView(),
       },
     ),
     CupertinoTabView(
@@ -40,20 +40,20 @@ class _IndexState extends State<Index> {
       tabBar: CupertinoTabBar(
         items: [
           BottomNavigationBarItem(
-              icon: Icon(
-                Icons.home,
-              ),
-              label: 'Home'),
-          BottomNavigationBarItem(
             icon: Icon(
-              Icons.add,
+              Icons.home,
             ),
           ),
           BottomNavigationBarItem(
-              icon: Icon(
-                Icons.person,
-              ),
-              label: 'Profile'),
+            icon: Icon(
+              Icons.notifications,
+            ),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.person,
+            ),
+          ),
         ],
       ),
       tabBuilder: (BuildContext context, index) {
