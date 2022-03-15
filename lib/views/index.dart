@@ -1,10 +1,10 @@
+import 'package:covidlab/views/add.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:covidlab/views/home.dart';
 import 'package:covidlab/views/profile.dart';
 import 'package:covidlab/widgets/emailSigninWidget.dart';
 import 'package:covidlab/widgets/emailSignupWidget.dart';
-import 'package:covidlab/widgets/personalInfoWidget.dart';
 
 class Index extends StatefulWidget {
   Index({Key? key}) : super(key: key);
@@ -18,6 +18,11 @@ class _IndexState extends State<Index> {
     CupertinoTabView(
       routes: {
         "/": (context) => Home(),
+      },
+    ),
+    CupertinoTabView(
+      routes: {
+        "/": (context) => AddAppointment(),
       },
     ),
     CupertinoTabView(
@@ -36,9 +41,14 @@ class _IndexState extends State<Index> {
         items: [
           BottomNavigationBarItem(
               icon: Icon(
-                Icons.search,
+                Icons.home,
               ),
               label: 'Home'),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.add,
+            ),
+          ),
           BottomNavigationBarItem(
               icon: Icon(
                 Icons.person,
