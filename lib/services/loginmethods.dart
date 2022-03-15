@@ -168,10 +168,13 @@ class UserRepository with ChangeNotifier {
   }
 
   Future<void> _onAuthStateChanged(User? firebaseUser) async {
+    await Future.delayed(const Duration(seconds: 3));
     if (firebaseUser == null) {
       _status = Status.Unauthenticated;
     } else {
       _user = firebaseUser;
+      _status = Status.Authenticating;
+      notifyListeners();
       final _response = await dbSignIn();
       if (_response["success"]) {
         _dbUser = _response["user"];

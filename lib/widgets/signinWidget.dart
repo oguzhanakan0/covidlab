@@ -20,68 +20,70 @@ class _SigninWidgetState extends State<SigninWidget> {
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<UserRepository>(context);
-    return SafeArea(
-        child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 24.0),
-            child:
-                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-              Text(
-                'Sign In',
-                style: Theme.of(context).textTheme.headline3,
-              ),
-              Text(
-                'Please choose one of the options to sign in',
-                style: Theme.of(context).textTheme.subtitle1,
-                textAlign: TextAlign.center,
-              ),
-              Divider(
-                indent: 48.0,
-                endIndent: 48.0,
-              ),
-              SignInButton(
-                Buttons.Google,
-                elevation: 0.5,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12.0)),
-                text: "Continue with Google",
-                onPressed: () async {
-                  await user.signinWithGoogle();
-                },
-              ),
-              if (Platform.isIOS)
-                SignInButton(
-                  Buttons.AppleDark,
-                  elevation: 0.5,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12.0)),
-                  text: "Continue with Apple",
-                  onPressed: () async {
-                    bool res = await user.signInWithApple();
-                    print(res);
-                  },
-                ),
-              SignInButton(
-                Buttons.FacebookNew,
-                elevation: 0.5,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12.0)),
-                text: "Continue with Facebook",
-                onPressed: () async {
-                  bool res = await user.signinWithFacebook();
-                  print(res);
-                },
-              ),
-              SignInButton(
-                Buttons.Email,
-                elevation: 0.5,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12.0)),
-                text: "Continue with Email",
-                onPressed: () {
-                  Navigator.pushNamed(context, '/email-signup',
-                      arguments: {'user': user});
-                },
-              ),
-            ])));
+    return Scaffold(
+        body: SafeArea(
+            child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 24.0),
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Sign In',
+                        style: Theme.of(context).textTheme.headline3,
+                      ),
+                      Text(
+                        'In order to use CovidLab, please choose one of the options to sign in.',
+                        style: Theme.of(context).textTheme.subtitle1,
+                        textAlign: TextAlign.center,
+                      ),
+                      Divider(
+                        indent: 48.0,
+                        endIndent: 48.0,
+                      ),
+                      SignInButton(
+                        Buttons.Google,
+                        elevation: 0.5,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12.0)),
+                        text: "Continue with Google",
+                        onPressed: () async {
+                          await user.signinWithGoogle();
+                        },
+                      ),
+                      if (Platform.isIOS)
+                        SignInButton(
+                          Buttons.AppleDark,
+                          elevation: 0.5,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12.0)),
+                          text: "Continue with Apple",
+                          onPressed: () async {
+                            bool res = await user.signInWithApple();
+                            print(res);
+                          },
+                        ),
+                      SignInButton(
+                        Buttons.FacebookNew,
+                        elevation: 0.5,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12.0)),
+                        text: "Continue with Facebook",
+                        onPressed: () async {
+                          bool res = await user.signinWithFacebook();
+                          print(res);
+                        },
+                      ),
+                      SignInButton(
+                        Buttons.Email,
+                        elevation: 0.5,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12.0)),
+                        text: "Continue with Email",
+                        onPressed: () {
+                          Navigator.pushNamed(context, '/email-signup',
+                              arguments: {'user': user});
+                        },
+                      ),
+                    ]))));
   }
 }
