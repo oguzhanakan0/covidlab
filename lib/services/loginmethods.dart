@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
@@ -9,7 +8,13 @@ import 'package:covidlab/services/requests.dart';
 import 'package:covidlab/variables/urls.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
-enum Status { Uninitialized, Authenticated, Authenticating, Unauthenticated }
+enum Status {
+  Uninitialized,
+  Authenticated,
+  Authenticating,
+  Unauthenticated,
+  ConnectionFailure
+}
 
 class UserRepository with ChangeNotifier {
   FirebaseAuth? _auth;
@@ -175,12 +180,16 @@ class UserRepository with ChangeNotifier {
       _user = firebaseUser;
       _status = Status.Authenticating;
       notifyListeners();
-      final _response = await dbSignIn();
-      if (_response["success"]) {
-        _dbUser = _response["user"];
-        _status = Status.Authenticated;
-      } else
-        _status = Status.Unauthenticated;
+      try {
+        final _response = await dbSignIn();
+        if (_response["success"]) {
+          _dbUser = _response["user"];
+          _status = Status.Authenticated;
+        } else
+          _status = Status.Unauthenticated;
+      } catch (e) {
+        _status = Status.ConnectionFailure;
+      }
     }
     notifyListeners();
   }
