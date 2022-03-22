@@ -25,8 +25,8 @@ dependencies:
     sdk: flutter
   sign_in_with_apple: ^3.3.0
   google_sign_in: ^5.0.2
-  firebase_auth: ^1.1.2
-  firebase_core: ^1.1.0
+  firebase_auth: ^3.3.11
+  firebase_core: ^1.13.1
   flutter_signin_button: ^2.0.0
   provider: ^5.0.0
   flutter_facebook_auth: ^3.3.3
@@ -38,9 +38,10 @@ dependencies:
   intl: ^0.17.0
   path_provider: ^2.0.3
   change_app_package_name: ^1.0.0
+  syncfusion_flutter_core: ^19.4.56
   syncfusion_flutter_datepicker: ^19.4.55
   syncfusion_flutter_calendar: ^19.4.55
-
+  geolocator: ^8.2.0
 
 dev_dependencies:
   flutter_test:

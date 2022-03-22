@@ -30,6 +30,32 @@ class _EntranceState extends State<Entrance> {
           title: 'CovidLab',
           routes: <String, WidgetBuilder>{"/": (context) => Index()},
         );
+      case Status.ConnectionFailure:
+        return Scaffold(
+          body: Center(
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                  Image(
+                    image: AssetImage('assets/img/logo.gif'),
+                    width: 72,
+                    height: 72,
+                  ),
+                  Text(
+                    'CovidLab',
+                    style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
+                  ),
+                ]),
+                SizedBox(
+                  height: 200,
+                ),
+                Text(
+                  "Cannot connect to CovidLab. Please come back later.",
+                  textAlign: TextAlign.center,
+                )
+              ])),
+        );
       case Status.Authenticating:
       case Status.Uninitialized:
       default:

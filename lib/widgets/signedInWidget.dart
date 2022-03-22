@@ -17,7 +17,7 @@ class _SignedInWidgetState extends State<SignedInWidget> {
   UserRepository? userRepository;
   void initState() {
     super.initState();
-    WidgetsBinding.instance!.addPostFrameCallback((_) => onAfterBuild(context));
+    // WidgetsBinding.instance!.addPostFrameCallback((_) => onAfterBuild(context));
   }
 
   @override
@@ -25,7 +25,7 @@ class _SignedInWidgetState extends State<SignedInWidget> {
     userRepository = Provider.of<UserRepository>(context);
     print("dbUser");
     print(userRepository!.dbUser!);
-    String displayName = userRepository!.user!.displayName!;
+    String displayName = userRepository!.user!.displayName ?? "No Name";
     String? photoUrl = userRepository!.user!.photoURL;
     String? providerId;
     FaIcon? icon;
@@ -121,19 +121,19 @@ class _SignedInWidgetState extends State<SignedInWidget> {
     );
   }
 
-  onAfterBuild(BuildContext context) async {
-    if (!userRepository!.dbUser!["is_info_complete"]) {
-      print("User's info not complete!: ");
-      print(userRepository!.dbUser!);
-      print("pushing complete info page..");
-      // Navigator.of(context).pushNamed('/personal-information', arguments: {"user": userRepository});
+  // onAfterBuild(BuildContext context) async {
+  //   if (!userRepository!.dbUser!["is_info_complete"]) {
+  //     print("User's info not complete!: ");
+  //     print(userRepository!.dbUser!);
+  //     print("pushing complete info page..");
+  //     // Navigator.of(context).pushNamed('/personal-information', arguments: {"user": userRepository});
 
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) =>
-                PersonalInformationWidget(userRepository: userRepository!)),
-      );
-    }
-  }
+  //     Navigator.push(
+  //       context,
+  //       MaterialPageRoute(
+  //           builder: (context) =>
+  //               PersonalInformationWidget(userRepository: userRepository!)),
+  //     );
+  //   }
+  // }
 }

@@ -1,12 +1,10 @@
 import 'package:covidlab/services/loginmethods.dart';
 import 'package:covidlab/widgets/emailSigninWidget.dart';
 import 'package:covidlab/widgets/emailSignupWidget.dart';
-import 'package:covidlab/widgets/signinWidget.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:covidlab/views/entrance.dart';
-import 'package:covidlab/views/index.dart';
 import 'package:provider/provider.dart';
 
 Future<void> main() async {
