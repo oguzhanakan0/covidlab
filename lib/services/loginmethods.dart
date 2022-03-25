@@ -21,6 +21,7 @@ class UserRepository with ChangeNotifier {
   User? _user;
   Status? _status = Status.Uninitialized;
   Map? _dbUser;
+  String? _dbToken;
 
   UserRepository.instance() : _auth = FirebaseAuth.instance {
     _auth!.authStateChanges().listen(_onAuthStateChanged);
@@ -29,6 +30,7 @@ class UserRepository with ChangeNotifier {
   Status? get status => _status;
   User? get user => _user;
   Map? get dbUser => _dbUser;
+  String? get dbToken => _dbToken;
 
   GoogleSignIn _googleSignIn = GoogleSignIn(
     scopes: [
@@ -158,10 +160,9 @@ class UserRepository with ChangeNotifier {
 
   Future<Map> dbSignIn() async {
     final idToken = await _user!.getIdToken();
-    Response r =
-        await sendPost(url: SIGN_IN_URL, body: json.encode({"token": idToken}));
+    Response r = await sendPost(url: SIGN_IN_URL, body: {"token": idToken});
     print("response received.");
-    // print(json.decode(r.body)); # Debug
+    print(json.decode(r.body)); // Debug
     return json.decode(r.body);
   }
 
@@ -184,6 +185,7 @@ class UserRepository with ChangeNotifier {
         final _response = await dbSignIn();
         if (_response["success"]) {
           _dbUser = _response["user"];
+          _dbToken = _response["token"];
           _status = Status.Authenticated;
         } else
           _status = Status.Unauthenticated;

@@ -178,7 +178,7 @@ class PersonalInformationWidgetState extends State<PersonalInformationWidget> {
                                         print(_formKey.toString());
                                         Response res = await sendPost(
                                             url: UPDATE_USER_URL,
-                                            body: jsonEncode({
+                                            body: {
                                               "uid": widget
                                                   .userRepository.user!.uid,
                                               "username": _username ??
@@ -191,11 +191,10 @@ class PersonalInformationWidgetState extends State<PersonalInformationWidget> {
                                               "last_name": _last_name ??
                                                   widget.userRepository
                                                       .dbUser!["last_name"],
-                                              "birth_date": _birth_date == null
-                                                  ? null
-                                                  : f.format(_birth_date!),
-                                              "marketing_check": _checkboxVal,
-                                            }));
+                                              "birth_date":
+                                                  f.format(_birth_date!),
+                                              "marketing_check": "1",
+                                            });
                                         print("response:");
                                         print(json.decode(res.body));
                                         if (json.decode(res.body)["success"]) {
