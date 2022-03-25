@@ -430,9 +430,10 @@ class _AddAppointmentState extends State<AddAppointment> {
             CupertinoDialogAction(
                 child: Text('Close'),
                 onPressed: () {
-                  Navigator.of(context).pop(); // TODO: DISABLE LATER
+                  // Navigator.of(context).pop(); // TODO: DISABLE LATER
 
-                  // Navigator.of(context).popUntil(ModalRoute.withName('/')); // TODO: ENABLE LATER
+                  Navigator.of(context)
+                      .popUntil(ModalRoute.withName('/')); // TODO: ENABLE LATER
                 })
           ],
         );
