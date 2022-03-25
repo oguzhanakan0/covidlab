@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:ui';
 
+import 'package:covidlab/services/loginmethods.dart';
 import 'package:covidlab/services/requests.dart';
 import 'package:covidlab/variables/urls.dart';
 import 'package:covidlab/widgets/locationListTile.dart';
@@ -9,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 
@@ -24,14 +26,14 @@ class _AddAppointmentState extends State<AddAppointment> {
   final f = DateFormat('EEE, MMM d, yyyy h:mm a');
   DateTime? date;
   dynamic selectedLocation;
-  DateTime? _appt_date;
-  DateTime? _appt_time;
-  bool _loading = false;
+
+  bool _submitting = false;
   bool _initializing = true;
   bool _calendarLoading = false;
   Appointment? _selectedAppointment;
   List<CupertinoActionSheetAction>? locations;
   dynamic appts;
+  UserRepository? userRepository;
 
   void initState() {
     super.initState();
@@ -57,6 +59,7 @@ class _AddAppointmentState extends State<AddAppointment> {
 
   @override
   Widget build(BuildContext context) {
+    userRepository = Provider.of<UserRepository>(context);
     return ClipRRect(
         borderRadius: BorderRadius.circular(40.0),
         child: Scaffold(
@@ -232,26 +235,93 @@ class _AddAppointmentState extends State<AddAppointment> {
                                   SizedBox(
                                     height: 12.0,
                                   ),
-                                  CupertinoButton(
-                                      color: Colors.green,
-                                      disabledColor: Colors.grey.shade600,
-                                      child: Text("Submit"),
-                                      onPressed: (_loading ||
-                                              (selectedLocation == null ||
-                                                  _selectedAppointment == null))
-                                          ? null
-                                          : () async {
-                                              setState(() {
-                                                _loading = true;
-                                              });
-                                              if (_formKey.currentState!
-                                                  .validate()) {
-                                                print("form is valid!");
-                                              }
-                                              setState(() {
-                                                _loading = false;
-                                              });
-                                            }),
+                                  Row(
+                                    children: [
+                                      CupertinoButton(
+                                          color: Colors.green,
+                                          disabledColor: Colors.grey.shade600,
+                                          child: Text("Submit"),
+                                          onPressed: (_submitting ||
+                                                  (selectedLocation == null ||
+                                                      _selectedAppointment ==
+                                                          null))
+                                              ? null
+                                              : () async {
+                                                  setState(() {
+                                                    _submitting = true;
+                                                  });
+                                                  if (_formKey.currentState!
+                                                      .validate()) {
+                                                    print("form is valid!");
+                                                    print(userRepository!
+                                                        .dbToken);
+                                                    Response r = await sendPost(
+                                                        url:
+                                                            MAKE_APPOINTMENT_URL,
+                                                        headers: {
+                                                          "Content-type":
+                                                              "application/json",
+                                                          "Authorization":
+                                                              "Token " +
+                                                                  userRepository!
+                                                                      .dbToken!
+                                                        },
+                                                        body: {
+                                                          "test_date":
+                                                              _selectedAppointment!
+                                                                  .startTime
+                                                                  .toUtc()
+                                                                  .toString(),
+                                                          "location":
+                                                              selectedLocation![
+                                                                  "slug"],
+                                                        });
+                                                    print(r.statusCode);
+                                                    print(r.body);
+                                                    dynamic response =
+                                                        json.decode(r.body);
+
+                                                    setState(() {
+                                                      _submitting = false;
+                                                    });
+                                                    if (r.statusCode != 200) {
+                                                      Navigator.of(context)
+                                                          .restorablePush(
+                                                              _dialogBuilder,
+                                                              arguments: {
+                                                            "title": "Oops",
+                                                            "content": response[
+                                                                "detail"]
+                                                          });
+                                                    } else {
+                                                      Navigator.of(context)
+                                                          .restorablePush(
+                                                              _dialogBuilder,
+                                                              arguments: {
+                                                            "title": "Success",
+                                                            "content":
+                                                                "Your appointment has been set.",
+                                                          });
+                                                    }
+                                                  }
+
+                                                  setState(() {
+                                                    _submitting = false;
+                                                  });
+                                                }),
+                                      _submitting
+                                          ? Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal: 12),
+                                              child: SizedBox(
+                                                child:
+                                                    CircularProgressIndicator(),
+                                                width: 24,
+                                                height: 24,
+                                              ))
+                                          : SizedBox.shrink()
+                                    ],
+                                  )
                                 ])))
                   ]),
           ),
@@ -262,12 +332,15 @@ class _AddAppointmentState extends State<AddAppointment> {
     Response r = await sendGet(url: GET_BLACKOUT_SLOTS_URL + location["slug"]);
     dynamic response = json.decode(r.body);
     if (r.statusCode != 200) {
-      Navigator.of(context).restorablePush(_dialogBuilder,
+      Navigator.of(context).restorablePushAndRemoveUntil(
+          _dialogBuilder, ModalRoute.withName('/'),
           arguments: {"message": response["message"]});
       return null;
     } else {
       dynamic blockoutSlots = response[0]["blackout_slots"];
-      print(response[0]["blackout_slots"]);
+
+      response[0]["blackout_slots"]..sort();
+      // print(response[0]["blackout_slots"]);
       final List<Appointment> appointments = <Appointment>[];
       DateTime today = DateTime.now();
       for (int i = 0; i < 14; i++) {
@@ -345,19 +418,21 @@ class _AddAppointmentState extends State<AddAppointment> {
   }
 
   static Route<Object?> _dialogBuilder(
-      BuildContext context, Object? arguments) {
+      BuildContext context, dynamic arguments) {
     return CupertinoDialogRoute<void>(
       context: context,
       builder: (BuildContext context) {
         return CupertinoAlertDialog(
-          title: Text('Error'),
-          content:
-              Text('Could not fetch the appointment data. Please try again.'),
+          title: Text(arguments!["title"] ?? 'Error'),
+          content: Text(arguments!["content"] ??
+              'Could not fetch the appointment data. Please try again.'),
           actions: <Widget>[
             CupertinoDialogAction(
                 child: Text('Close'),
                 onPressed: () {
-                  Navigator.of(context).popUntil(ModalRoute.withName('/'));
+                  Navigator.of(context).pop(); // TODO: DISABLE LATER
+
+                  // Navigator.of(context).popUntil(ModalRoute.withName('/')); // TODO: ENABLE LATER
                 })
           ],
         );
