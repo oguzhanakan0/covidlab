@@ -190,6 +190,7 @@ class UserRepository with ChangeNotifier {
         } else
           _status = Status.Unauthenticated;
       } catch (e) {
+        print(e.toString());
         _status = Status.ConnectionFailure;
       }
     }

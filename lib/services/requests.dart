@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 // const String host = 'http://137.184.216.180:8001';
-const String host = 'http://127.0.0.1:8000';
+const String host = 'http://192.168.0.102:8000';
 
 Future<http.Response> sendPost(
     {required String url,
