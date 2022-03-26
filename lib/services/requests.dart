@@ -2,8 +2,8 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
-// const String host = 'http://137.184.216.180:8001';
-const String host = 'http://192.168.0.102:8000';
+const String host = 'http://127.0.0.1:8000'; // FOR IOS
+// const String host = 'http://10.0.2.2:8000'; // FOR ANDROID
 
 Future<http.Response> sendPost(
     {required String url,
@@ -27,11 +27,14 @@ Future<http.Response> sendPost(
   }
 }
 
-Future<http.Response> sendGet({required String url, int timeout = 4}) async {
+Future<http.Response> sendGet(
+    {required String url,
+    Map<String, String>? headers,
+    int timeout = 4}) async {
   print("sending get request to: " + url);
   try {
     http.Response response = await http
-        .get(Uri.parse(host + url))
+        .get(Uri.parse(host + url), headers: headers)
         .timeout(Duration(seconds: timeout));
     return response;
   } catch (err) {
