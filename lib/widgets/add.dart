@@ -225,13 +225,6 @@ class _AddAppointmentState extends State<AddAppointment> {
                                                                               .startTime))
                                                                     ]))
                                                 ]),
-                                  // CupertinoFormSection(
-                                  //     header: Text("3. Payment (Optional)"),
-                                  //     children: [
-                                  //       TextButton(
-                                  //           child: Text("Make Payment"),
-                                  //           onPressed: () {})
-                                  //     ]),
                                   SizedBox(
                                     height: 12.0,
                                   ),
@@ -255,6 +248,17 @@ class _AddAppointmentState extends State<AddAppointment> {
                                                     print("form is valid!");
                                                     print(userRepository!
                                                         .dbToken);
+                                                    Map<String, String>
+                                                        _appointment = {
+                                                      "test_date":
+                                                          _selectedAppointment!
+                                                              .startTime
+                                                              .toUtc()
+                                                              .toString(),
+                                                      "location":
+                                                          selectedLocation![
+                                                              "slug"],
+                                                    };
                                                     Response r = await sendPost(
                                                         url:
                                                             MAKE_APPOINTMENT_URL,
@@ -266,16 +270,7 @@ class _AddAppointmentState extends State<AddAppointment> {
                                                                   userRepository!
                                                                       .dbToken!
                                                         },
-                                                        body: {
-                                                          "test_date":
-                                                              _selectedAppointment!
-                                                                  .startTime
-                                                                  .toUtc()
-                                                                  .toString(),
-                                                          "location":
-                                                              selectedLocation![
-                                                                  "slug"],
-                                                        });
+                                                        body: _appointment);
                                                     print(r.statusCode);
                                                     print(r.body);
                                                     dynamic response =
@@ -294,6 +289,12 @@ class _AddAppointmentState extends State<AddAppointment> {
                                                                 "detail"]
                                                           });
                                                     } else {
+                                                      userRepository!
+                                                          .appointments
+                                                          .add(_appointment);
+
+                                                      print(userRepository!
+                                                          .appointments);
                                                       Navigator.of(context)
                                                           .restorablePush(
                                                               _dialogBuilder,

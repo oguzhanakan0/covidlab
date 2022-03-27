@@ -22,6 +22,7 @@ class UserRepository with ChangeNotifier {
   Status? _status = Status.Uninitialized;
   Map? _dbUser;
   String? _dbToken;
+  dynamic _appointments = [];
 
   UserRepository.instance() : _auth = FirebaseAuth.instance {
     _auth!.authStateChanges().listen(_onAuthStateChanged);
@@ -31,6 +32,12 @@ class UserRepository with ChangeNotifier {
   User? get user => _user;
   Map? get dbUser => _dbUser;
   String? get dbToken => _dbToken;
+  dynamic get appointments => _appointments;
+
+  set appointments(dynamic a) {
+    _appointments = a;
+    notifyListeners();
+  }
 
   GoogleSignIn _googleSignIn = GoogleSignIn(
     scopes: [
