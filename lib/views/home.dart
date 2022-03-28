@@ -54,7 +54,11 @@ class _HomeState extends State<Home> {
                     return FractionallySizedBox(
                         heightFactor: 0.88, child: AddAppointment());
                   },
-                ).then((value) => setState(() {}));
+                ).then((value) async {
+                  print("value returned from dialog:");
+                  print(value);
+                  await loadHomePageData();
+                });
               }
             },
           ),
@@ -84,7 +88,7 @@ class _HomeState extends State<Home> {
                         userRepository!.appointments.length,
                         (index) {
                           return AppointmentCard(
-                              userRepository!.appointments[index]);
+                              appointment: userRepository!.appointments[index]);
                         },
                       )),
                     ])),
@@ -96,6 +100,9 @@ class _HomeState extends State<Home> {
   }
 
   loadHomePageData() async {
+    setState(() {
+      _loading = true;
+    });
     Response r = await sendGet(
         url: GET_APPOINTMENTS_URL,
         headers: {"Authorization": "Token " + userRepository!.dbToken!});
@@ -110,10 +117,10 @@ class _HomeState extends State<Home> {
     } else {
       dynamic allAppointments = json.decode(r.body);
 
-      print("appointments:");
-      print(allAppointments);
-      print("userRepository!.appointments");
-      print(userRepository!.appointments);
+      // print("appointments:");
+      // print(allAppointments);
+      // print("userRepository!.appointments");
+      // print(userRepository!.appointments);
 
       allAppointments.sort((a, b) => DateTime.parse(a["test_date"])
               .isBefore(DateTime.parse(b["test_date"]))
