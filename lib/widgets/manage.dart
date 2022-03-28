@@ -14,14 +14,15 @@ import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 
-class AddAppointment extends StatefulWidget {
-  AddAppointment({Key? key}) : super(key: key);
+class ManageAppointment extends StatefulWidget {
+  ManageAppointment({Key? key, required this.appointment}) : super(key: key);
+  final dynamic appointment;
 
   @override
-  _AddAppointmentState createState() => _AddAppointmentState();
+  _ManageAppointmentState createState() => _ManageAppointmentState();
 }
 
-class _AddAppointmentState extends State<AddAppointment> {
+class _ManageAppointmentState extends State<ManageAppointment> {
   final _formKey = GlobalKey<FormState>();
   final f = DateFormat('EEE, MMM d, yyyy h:mm a');
   DateTime? date;
@@ -37,6 +38,7 @@ class _AddAppointmentState extends State<AddAppointment> {
 
   void initState() {
     super.initState();
+    selectedLocation = widget.appointment["location"];
     WidgetsBinding.instance!.addPostFrameCallback((_) => onAfterBuild(context));
     // appts = _getDataSource(selectedLocation);
   }
@@ -65,7 +67,7 @@ class _AddAppointmentState extends State<AddAppointment> {
         child: Scaffold(
           appBar: CupertinoNavigationBar(
             automaticallyImplyLeading: false,
-            middle: Text('Make an Appointment'),
+            middle: Text('Manage Appointment'),
             trailing: IconButton(
                 icon: Icon(Icons.cancel_outlined),
                 onPressed: () {
@@ -248,7 +250,8 @@ class _AddAppointmentState extends State<AddAppointment> {
                                                     print("form is valid!");
                                                     print(userRepository!
                                                         .dbToken);
-                                                    dynamic _appointment = {
+                                                    Map<String, String>
+                                                        _appointment = {
                                                       "test_date":
                                                           _selectedAppointment!
                                                               .startTime
@@ -269,8 +272,7 @@ class _AddAppointmentState extends State<AddAppointment> {
                                                                   userRepository!
                                                                       .dbToken!
                                                         },
-                                                        body: Map.from(
-                                                            _appointment));
+                                                        body: _appointment);
                                                     print(r.statusCode);
                                                     print(r.body);
                                                     dynamic response =
@@ -289,12 +291,9 @@ class _AddAppointmentState extends State<AddAppointment> {
                                                                 "detail"]
                                                           });
                                                     } else {
-                                                      _appointment["location"] =
-                                                          selectedLocation;
                                                       userRepository!
                                                           .appointments
-                                                          .insert(
-                                                              0, _appointment);
+                                                          .add(_appointment);
 
                                                       print(userRepository!
                                                           .appointments);
@@ -394,14 +393,15 @@ class _AddAppointmentState extends State<AddAppointment> {
             element["distance"] = getDistanceToDevice(devicePosition, element));
         response.sort((a, b) => getDistance(a).compareTo(getDistance(b)));
       }
+      locations = [];
+      response.forEach((element) => locations?.add(CupertinoActionSheetAction(
+            child: LocationListTile(element),
+            onPressed: () {
+              Navigator.pop(context, element);
+            },
+          )));
+      appts = await _getDataSource(selectedLocation);
       setState(() {
-        locations = [];
-        response.forEach((element) => locations?.add(CupertinoActionSheetAction(
-              child: LocationListTile(element),
-              onPressed: () {
-                Navigator.pop(context, element);
-              },
-            )));
         _initializing = false;
       });
       print("locations are loaded");
