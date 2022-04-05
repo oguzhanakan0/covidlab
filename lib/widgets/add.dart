@@ -63,6 +63,86 @@ class _AddAppointmentState extends State<AddAppointment> {
     return ClipRRect(
         borderRadius: BorderRadius.circular(40.0),
         child: Scaffold(
+          bottomNavigationBar: Padding(
+              padding:
+                  EdgeInsets.only(top: 8, left: 24, bottom: 24.0, right: 24),
+              child: Row(
+                children: [
+                  Expanded(
+                      child: CupertinoButton(
+                          color: Colors.green,
+                          disabledColor: Colors.grey.shade600,
+                          child: Text("Set Appointment"),
+                          onPressed: (_submitting ||
+                                  (selectedLocation == null ||
+                                      _selectedAppointment == null))
+                              ? null
+                              : () async {
+                                  setState(() {
+                                    _submitting = true;
+                                  });
+                                  if (_formKey.currentState!.validate()) {
+                                    print("form is valid!");
+                                    print(userRepository!.dbToken);
+                                    Map<String, String> _appointment = {
+                                      "test_date": _selectedAppointment!
+                                          .startTime
+                                          .toUtc()
+                                          .toString(),
+                                      "location": selectedLocation!["slug"],
+                                    };
+                                    Response r = await sendPost(
+                                        url: MAKE_APPOINTMENT_URL,
+                                        headers: {
+                                          "Content-type": "application/json",
+                                          "Authorization": "Token " +
+                                              userRepository!.dbToken!
+                                        },
+                                        body: _appointment);
+                                    print(r.statusCode);
+                                    print(r.body);
+                                    dynamic response = json.decode(r.body);
+
+                                    setState(() {
+                                      _submitting = false;
+                                    });
+                                    if (r.statusCode != 200) {
+                                      Navigator.of(context).restorablePush(
+                                          _dialogBuilder,
+                                          arguments: {
+                                            "title": "Oops",
+                                            "content": response["detail"]
+                                          });
+                                    } else {
+                                      userRepository!.appointments
+                                          .add(_appointment);
+
+                                      print(userRepository!.appointments);
+                                      Navigator.of(context).restorablePush(
+                                          _dialogBuilder,
+                                          arguments: {
+                                            "title": "Success",
+                                            "content":
+                                                "Your appointment has been set.",
+                                          });
+                                    }
+                                  }
+
+                                  setState(() {
+                                    _submitting = false;
+                                  });
+                                })),
+                  _submitting
+                      ? Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 12),
+                          child: SizedBox(
+                            child: CircularProgressIndicator(),
+                            width: 24,
+                            height: 24,
+                          ))
+                      : SizedBox.shrink()
+                ],
+              )),
           appBar: CupertinoNavigationBar(
             automaticallyImplyLeading: false,
             middle: Text('Make an Appointment'),
@@ -228,104 +308,6 @@ class _AddAppointmentState extends State<AddAppointment> {
                                   SizedBox(
                                     height: 12.0,
                                   ),
-                                  Row(
-                                    children: [
-                                      CupertinoButton(
-                                          color: Colors.green,
-                                          disabledColor: Colors.grey.shade600,
-                                          child: Text("Submit"),
-                                          onPressed: (_submitting ||
-                                                  (selectedLocation == null ||
-                                                      _selectedAppointment ==
-                                                          null))
-                                              ? null
-                                              : () async {
-                                                  setState(() {
-                                                    _submitting = true;
-                                                  });
-                                                  if (_formKey.currentState!
-                                                      .validate()) {
-                                                    print("form is valid!");
-                                                    print(userRepository!
-                                                        .dbToken);
-                                                    dynamic _appointment = {
-                                                      "test_date":
-                                                          _selectedAppointment!
-                                                              .startTime
-                                                              .toUtc()
-                                                              .toString(),
-                                                      "location":
-                                                          selectedLocation![
-                                                              "slug"],
-                                                    };
-                                                    Response r = await sendPost(
-                                                        url:
-                                                            MAKE_APPOINTMENT_URL,
-                                                        headers: {
-                                                          "Content-type":
-                                                              "application/json",
-                                                          "Authorization":
-                                                              "Token " +
-                                                                  userRepository!
-                                                                      .dbToken!
-                                                        },
-                                                        body: Map.from(
-                                                            _appointment));
-                                                    print(r.statusCode);
-                                                    print(r.body);
-                                                    dynamic response =
-                                                        json.decode(r.body);
-
-                                                    setState(() {
-                                                      _submitting = false;
-                                                    });
-                                                    if (r.statusCode != 200) {
-                                                      Navigator.of(context)
-                                                          .restorablePush(
-                                                              _dialogBuilder,
-                                                              arguments: {
-                                                            "title": "Oops",
-                                                            "content": response[
-                                                                "detail"]
-                                                          });
-                                                    } else {
-                                                      _appointment["location"] =
-                                                          selectedLocation;
-                                                      userRepository!
-                                                          .appointments
-                                                          .insert(
-                                                              0, _appointment);
-
-                                                      print(userRepository!
-                                                          .appointments);
-                                                      Navigator.of(context)
-                                                          .restorablePush(
-                                                              _dialogBuilder,
-                                                              arguments: {
-                                                            "title": "Success",
-                                                            "content":
-                                                                "Your appointment has been set.",
-                                                          });
-                                                    }
-                                                  }
-
-                                                  setState(() {
-                                                    _submitting = false;
-                                                  });
-                                                }),
-                                      _submitting
-                                          ? Padding(
-                                              padding: EdgeInsets.symmetric(
-                                                  horizontal: 12),
-                                              child: SizedBox(
-                                                child:
-                                                    CircularProgressIndicator(),
-                                                width: 24,
-                                                height: 24,
-                                              ))
-                                          : SizedBox.shrink()
-                                    ],
-                                  )
                                 ])))
                   ]),
           ),

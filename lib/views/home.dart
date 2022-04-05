@@ -77,22 +77,40 @@ class _HomeState extends State<Home> {
                       },
                     ),
                   )
-                : CircularProgressIndicator()
-            : SafeArea(
-                child: ListView(children: [
-                Padding(
-                    padding: EdgeInsets.all(24.0),
-                    child: Column(children: [
-                      Column(
-                          children: List.generate(
-                        userRepository!.appointments.length,
-                        (index) {
-                          return AppointmentCard(
-                              appointment: userRepository!.appointments[index]);
-                        },
-                      )),
-                    ])),
-              ])));
+                : Center(child: CircularProgressIndicator())
+            : userRepository!.appointments.length == 0
+                ? SafeArea(
+                    child: Container(
+                        margin: EdgeInsets.all(24),
+                        padding: EdgeInsets.all(24),
+                        decoration: BoxDecoration(
+                          color: Colors.blue.shade100,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Text(
+                          "You have no appointments set.\nTap the '+' button on the top right to make your first appointment!",
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium!
+                              .copyWith(fontSize: 18),
+                        )))
+                : SafeArea(
+                    child: ListView(children: [
+                    Padding(
+                        padding: EdgeInsets.all(24.0),
+                        child: Column(children: [
+                          Column(
+                              children: List.generate(
+                            userRepository!.appointments.length,
+                            (index) {
+                              return AppointmentCard(
+                                  appointment:
+                                      userRepository!.appointments[index]);
+                            },
+                          )),
+                        ])),
+                  ])));
   }
 
   onAfterBuild(BuildContext context) async {
@@ -116,17 +134,7 @@ class _HomeState extends State<Home> {
       });
     } else {
       dynamic allAppointments = json.decode(r.body);
-
-      // print("appointments:");
-      // print(allAppointments);
-      // print("userRepository!.appointments");
-      // print(userRepository!.appointments);
-
-      allAppointments.sort((a, b) => DateTime.parse(a["test_date"])
-              .isBefore(DateTime.parse(b["test_date"]))
-          ? 1
-          : 0);
-      userRepository!.appointments = allAppointments;
+      userRepository!.appointments = sortAppointments(allAppointments);
       print("userRepository!.appointments:");
       print(userRepository!.appointments);
 
@@ -139,4 +147,14 @@ class _HomeState extends State<Home> {
       _loading = false;
     });
   }
+}
+
+dynamic sortAppointments(dynamic allAppointments) {
+  allAppointments.sort((a, b) =>
+      DateTime.parse(a["test_date"]).isBefore(DateTime.parse(b["test_date"]))
+          ? 1
+          : 0);
+  int ix = 0;
+  allAppointments.forEach((appointment) => appointment["index"] = ix++);
+  return allAppointments;
 }

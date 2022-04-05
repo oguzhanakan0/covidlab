@@ -25,7 +25,12 @@ class _SignedInWidgetState extends State<SignedInWidget> {
     userRepository = Provider.of<UserRepository>(context);
     print("dbUser");
     print(userRepository!.dbUser!);
-    String displayName = userRepository!.user!.displayName ?? "No Name";
+    String displayName = (userRepository!.dbUser!["first_name"] +
+            " " +
+            userRepository!.dbUser!["last_name"]) ??
+        "No Name";
+
+    String birthDate = userRepository!.dbUser!["birth_date"];
     String? photoUrl = userRepository!.user!.photoURL;
     String? providerId;
     FaIcon? icon;
@@ -88,6 +93,15 @@ class _SignedInWidgetState extends State<SignedInWidget> {
               style: Theme.of(context)
                   .textTheme
                   .headline5!
+                  .copyWith(fontWeight: FontWeight.bold),
+            )),
+        Padding(
+            padding: EdgeInsets.only(bottom: 12.0),
+            child: Text(
+              birthDate,
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyMedium!
                   .copyWith(fontWeight: FontWeight.bold),
             )),
         Padding(

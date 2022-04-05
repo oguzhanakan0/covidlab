@@ -1,9 +1,7 @@
 import 'dart:convert';
 
+import 'package:covidlab/variables/urls.dart';
 import 'package:http/http.dart' as http;
-
-const String host = 'http://127.0.0.1:8000'; // FOR IOS
-// const String host = 'http://10.0.2.2:8000'; // FOR ANDROID
 
 Future<http.Response> sendPost(
     {required String url,
@@ -19,7 +17,7 @@ Future<http.Response> sendPost(
   //  printWrapped(body!);
   try {
     http.Response response = await http
-        .post(Uri.parse(host + url), headers: headers, body: json.encode(body))
+        .post(Uri.parse(HOST + url), headers: headers, body: json.encode(body))
         .timeout(Duration(seconds: timeout));
     return response;
   } catch (err) {
@@ -34,7 +32,7 @@ Future<http.Response> sendGet(
   print("sending get request to: " + url);
   try {
     http.Response response = await http
-        .get(Uri.parse(host + url), headers: headers)
+        .get(Uri.parse(HOST + url), headers: headers)
         .timeout(Duration(seconds: timeout));
     return response;
   } catch (err) {
