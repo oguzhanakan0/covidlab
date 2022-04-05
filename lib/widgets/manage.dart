@@ -194,57 +194,87 @@ class _ManageAppointmentState extends State<ManageAppointment> {
                                 : SizedBox.shrink()
                           ],
                         ),
-                        Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 24.0),
-                            child: TextButton(
-                              child: Text("Cancel Appointment"),
-                              onPressed: () async {
-                                setState(() {
-                                  _submittingCancel = true;
-                                });
+                        Row(
+                          children: [
+                            Expanded(
+                                child: Padding(
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 24.0),
+                                    child: TextButton(
+                                      child: Text("Cancel Appointment"),
+                                      onPressed: _submittingCancel
+                                          ? null
+                                          : () async {
+                                              setState(() {
+                                                _submittingCancel = true;
+                                              });
 
-                                Response r = await sendPost(
-                                    url: CANCEL_APPOINTMENT_URL,
-                                    headers: {
-                                      "Content-type": "application/json",
-                                      "Authorization":
-                                          "Token " + userRepository!.dbToken!
-                                    },
-                                    body: {
-                                      "test_id": widget.appointment["id"]
-                                    });
-                                print(r.statusCode);
-                                print(r.body);
-                                dynamic response = json.decode(r.body);
+                                              Response r = await sendPost(
+                                                  url: CANCEL_APPOINTMENT_URL,
+                                                  headers: {
+                                                    "Content-type":
+                                                        "application/json",
+                                                    "Authorization": "Token " +
+                                                        userRepository!.dbToken!
+                                                  },
+                                                  body: {
+                                                    "test_id":
+                                                        widget.appointment["id"]
+                                                  });
+                                              print(r.statusCode);
+                                              print(r.body);
+                                              dynamic response =
+                                                  json.decode(r.body);
 
-                                if (r.statusCode != 200) {
-                                  Navigator.of(context).restorablePush(
-                                      _dialogBuilder,
-                                      arguments: {
-                                        "title": "Oops",
-                                        "content": response["detail"],
-                                        "popCount": 1
-                                      });
-                                } else {
-                                  print(userRepository!.appointments);
-                                  userRepository!.appointments
-                                      .removeAt(widget.appointment["index"]);
-                                  print(userRepository!.appointments);
-                                  Navigator.of(context).restorablePush(
-                                      _dialogBuilder,
-                                      arguments: {
-                                        "title": "Success",
-                                        "content": "Appointment was canceled.",
-                                        "popCount": 1,
-                                        "result": true
-                                      });
-                                }
+                                              if (r.statusCode != 200) {
+                                                Navigator.of(context)
+                                                    .restorablePush(
+                                                        _dialogBuilder,
+                                                        arguments: {
+                                                      "title": "Oops",
+                                                      "content":
+                                                          response["detail"],
+                                                      "popCount": 1
+                                                    });
+                                              } else {
+                                                print(userRepository!
+                                                    .appointments);
+                                                userRepository!.appointments[
+                                                        widget.appointment[
+                                                            "index"]]
+                                                    ["canceled"] = true;
+                                                print(userRepository!
+                                                    .appointments);
 
-                                setState(() {
-                                  _submittingCancel = false;
-                                });
-                              },
-                            )),
+                                                Navigator.of(context)
+                                                    .restorablePush(
+                                                        _dialogBuilder,
+                                                        arguments: {
+                                                      "title": "Success",
+                                                      "content":
+                                                          "Appointment was canceled.",
+                                                      "popCount": 1,
+                                                      "result": true
+                                                    });
+                                              }
+
+                                              setState(() {
+                                                _submittingCancel = false;
+                                              });
+                                            },
+                                    ))),
+                            _submittingCancel
+                                ? Padding(
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 6),
+                                    child: SizedBox(
+                                      child: CircularProgressIndicator(),
+                                      width: 12,
+                                      height: 12,
+                                    ))
+                                : SizedBox.shrink()
+                          ],
+                        )
                       ])),
                 ),
                 appBar: CupertinoNavigationBar(
