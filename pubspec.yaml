@@ -23,6 +23,12 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  # fonts:
+  #   - family: OpenSans
+  #     fonts:
+  #       - asset: assets/fonts/OpenSans/OpenSans-Medium.ttf
+  #       - asset: assets/fonts/OpenSans/OpenSans-MediumItalic.ttf
+  #         style: italic
   sign_in_with_apple: ^3.3.0
   google_sign_in: ^5.0.2
   firebase_auth: ^3.3.11
@@ -42,6 +48,13 @@ dependencies:
   syncfusion_flutter_datepicker: ^19.4.55
   syncfusion_flutter_calendar: ^19.4.55
   geolocator: ^8.2.0
+  url_launcher: ^6.0.20
+  qr_flutter: ^4.0.0
+  screenshot: ^1.2.3
+  share_plus: ^4.0.3
+  pdf: ^3.6.4
+  printing: ^5.6.5
+
 
 dev_dependencies:
   flutter_test:

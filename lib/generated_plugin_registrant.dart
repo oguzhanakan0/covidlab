@@ -10,7 +10,10 @@ import 'package:firebase_core_web/firebase_core_web.dart';
 import 'package:flutter_facebook_auth_web/flutter_facebook_auth_web.dart';
 import 'package:geolocator_web/geolocator_web.dart';
 import 'package:google_sign_in_web/google_sign_in_web.dart';
+import 'package:printing/printing_web.dart';
+import 'package:share_plus_web/share_plus_web.dart';
 import 'package:sign_in_with_apple_web/sign_in_with_apple_web.dart';
+import 'package:url_launcher_web/url_launcher_web.dart';
 
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 
@@ -21,6 +24,9 @@ void registerPlugins(Registrar registrar) {
   FlutterFacebookAuthPlugin.registerWith(registrar);
   GeolocatorPlugin.registerWith(registrar);
   GoogleSignInPlugin.registerWith(registrar);
+  PrintingPlugin.registerWith(registrar);
+  SharePlusPlugin.registerWith(registrar);
   SignInWithApplePlugin.registerWith(registrar);
+  UrlLauncherPlugin.registerWith(registrar);
   registrar.registerMessageHandler();
 }

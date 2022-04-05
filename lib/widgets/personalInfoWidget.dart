@@ -98,11 +98,17 @@ class PersonalInformationWidgetState extends State<PersonalInformationWidget> {
                                       initialValue: widget.userRepository
                                               .dbUser!["first_name"] ??
                                           '',
-                                      placeholder: 'Oguzhan',
+                                      placeholder: 'Michael',
                                       onChanged: (value) {
                                         setState(() {
                                           _first_name = value;
                                         });
+                                      },
+                                      validator: (value) {
+                                        if (value == null || value.isEmpty) {
+                                          return 'Please enter your first name';
+                                        }
+                                        return null;
                                       },
                                     )),
                                 CupertinoFormRow(
@@ -112,11 +118,17 @@ class PersonalInformationWidgetState extends State<PersonalInformationWidget> {
                                       initialValue: widget.userRepository
                                               .dbUser!["last_name"] ??
                                           '',
-                                      placeholder: 'Akan',
+                                      placeholder: 'Jordan',
                                       onChanged: (value) {
                                         setState(() {
                                           _last_name = value;
                                         });
+                                      },
+                                      validator: (value) {
+                                        if (value == null || value.isEmpty) {
+                                          return 'Please enter your last name';
+                                        }
+                                        return null;
                                       },
                                     )),
                                 CupertinoFormRow(
@@ -141,6 +153,12 @@ class PersonalInformationWidgetState extends State<PersonalInformationWidget> {
                                             placeholder: _birth_date == null
                                                 ? 'Tap to enter'
                                                 : f.format(_birth_date!),
+                                            validator: (value) {
+                                              if (_birth_date == null) {
+                                                return 'Please enter your birth date';
+                                              }
+                                              return null;
+                                            },
                                           ),
                                         ))),
                                 CheckboxListTile(
