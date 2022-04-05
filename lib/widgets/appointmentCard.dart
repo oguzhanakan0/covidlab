@@ -40,7 +40,9 @@ class _AppointmentCardState extends State<AppointmentCard> {
   @override
   Widget build(BuildContext context) {
     print(appointment);
-    if (DateTime.parse(appointment["test_date"]).isAfter(DateTime.now())) {
+    if (appointment["canceled"])
+      return SizedBox.shrink();
+    else if (DateTime.parse(appointment["test_date"]).isAfter(DateTime.now())) {
       return Card(
         elevation: 0,
         color: Colors.blue.shade600,
