@@ -165,6 +165,11 @@ class _ManageAppointmentState extends State<ManageAppointment> {
                                                             "index"]]
                                                     ["test_date"] = testDate;
 
+                                                userRepository!.appointments =
+                                                    sortAppointments(
+                                                        userRepository!
+                                                            .appointments);
+
                                                 print(userRepository!
                                                     .appointments);
                                                 Navigator.of(context)
@@ -759,6 +764,16 @@ class _ManageAppointmentState extends State<ManageAppointment> {
       return null;
     }
     return await Geolocator.getCurrentPosition();
+  }
+
+  dynamic sortAppointments(dynamic allAppointments) {
+    allAppointments.sort((a, b) =>
+        DateTime.parse(a["test_date"]).isBefore(DateTime.parse(b["test_date"]))
+            ? 1
+            : 0);
+    int ix = 0;
+    allAppointments.forEach((appointment) => appointment["index"] = ix++);
+    return allAppointments;
   }
 }
 

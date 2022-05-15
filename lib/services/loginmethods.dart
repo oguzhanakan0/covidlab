@@ -23,6 +23,7 @@ class UserRepository with ChangeNotifier {
   Map? _dbUser;
   String? _dbToken;
   dynamic _appointments = [];
+  dynamic _notifs = [];
 
   UserRepository.instance() : _auth = FirebaseAuth.instance {
     _auth!.authStateChanges().listen(_onAuthStateChanged);
@@ -33,9 +34,15 @@ class UserRepository with ChangeNotifier {
   Map? get dbUser => _dbUser;
   String? get dbToken => _dbToken;
   dynamic get appointments => _appointments;
+  dynamic get notifs => _notifs;
 
   set appointments(dynamic a) {
     _appointments = a;
+    notifyListeners();
+  }
+
+  set notifs(dynamic a) {
+    _notifs = a;
     notifyListeners();
   }
 

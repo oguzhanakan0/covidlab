@@ -106,15 +106,61 @@ class _HomeState extends State<Home> {
                             (index) {
                               return AppointmentCard(
                                   appointment:
-                                      userRepository!.appointments[index]);
+                                      userRepository!.appointments[index],
+                                  dummyFunc: dummyFunc);
                             },
                           )),
                         ])),
                   ])));
   }
 
+  void dummyFunc() async {
+    print("dummy func works");
+    setState(() {
+      _loading = true;
+    });
+    await Future.delayed(Duration(seconds: 1));
+    setState(() {
+      _loading = false;
+    });
+  }
+
   onAfterBuild(BuildContext context) async {
     await loadHomePageData();
+    await loadNotifs();
+  }
+
+  loadNotifs() async {
+    // setState(() {
+    //   _loadingNotifs = true;
+    // });
+    Response r = await sendGet(
+        url: GET_NOTIFS_URL,
+        headers: {"Authorization": "Token " + userRepository!.dbToken!});
+
+    print(r.statusCode);
+    print(r.body);
+
+    if (r.statusCode != 200) {
+      // setState(() {
+      //   _loadingNotifsError = true;
+      // });
+    } else {
+      dynamic n = json.decode(r.body);
+      n.sort((a, b) => DateTime.parse(a["date_created"])
+              .isBefore(DateTime.parse(b["date_created"]))
+          ? 1
+          : 0);
+      userRepository!.notifs = n;
+      // set notifs in userrepository
+      // setState(() {
+      //   _loadingNotifsError = false;
+      // });
+    }
+
+    // setState(() {
+    //   _loadingNotifs = false;
+    // });
   }
 
   loadHomePageData() async {
@@ -125,8 +171,8 @@ class _HomeState extends State<Home> {
         url: GET_APPOINTMENTS_URL,
         headers: {"Authorization": "Token " + userRepository!.dbToken!});
 
-    print(r.statusCode);
-    print(r.body);
+    // print(r.statusCode);
+    // print(r.body);
 
     if (r.statusCode != 200) {
       setState(() {
@@ -135,8 +181,8 @@ class _HomeState extends State<Home> {
     } else {
       dynamic allAppointments = json.decode(r.body);
       userRepository!.appointments = sortAppointments(allAppointments);
-      print("userRepository!.appointments:");
-      print(userRepository!.appointments);
+      // print("userRepository!.appointments:");
+      // print(userRepository!.appointments);
 
       setState(() {
         _loadingError = false;

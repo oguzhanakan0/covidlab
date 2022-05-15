@@ -36,7 +36,7 @@ class _SignedInWidgetState extends State<SignedInWidget> {
             userRepository!.dbUser!["last_name"]) ??
         "No Name";
 
-    String birthDate = userRepository!.dbUser!["birth_date"];
+    String birthDate = userRepository!.dbUser!["birth_date"] ?? "none";
     String? photoUrl = userRepository!.user!.photoURL;
     String? providerId;
     FaIcon? icon;

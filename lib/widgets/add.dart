@@ -318,6 +318,7 @@ class _AddAppointmentState extends State<AddAppointment> {
     Response r = await sendGet(url: GET_BLACKOUT_SLOTS_URL + location["slug"]);
     dynamic response = json.decode(r.body);
     if (r.statusCode != 200) {
+      print(response); // Debug
       Navigator.of(context).restorablePushAndRemoveUntil(
           _dialogBuilder, ModalRoute.withName('/'),
           arguments: {"message": response["message"]});
@@ -367,6 +368,7 @@ class _AddAppointmentState extends State<AddAppointment> {
     Response r = await sendGet(url: GET_LOCATIONS_URL);
     dynamic response = json.decode(r.body);
     if (r.statusCode != 200) {
+      print(response); // Debug
       Navigator.of(context).restorablePush(_dialogBuilder,
           arguments: {"message": response["message"]});
     } else {

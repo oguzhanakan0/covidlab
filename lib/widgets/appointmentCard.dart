@@ -15,8 +15,11 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 
 class AppointmentCard extends StatefulWidget {
-  AppointmentCard({Key? key, required this.appointment}) : super(key: key);
+  AppointmentCard(
+      {Key? key, required this.appointment, required this.dummyFunc})
+      : super(key: key);
   final dynamic appointment;
+  final dummyFunc;
 
   @override
   _AppointmentCardState createState() => _AppointmentCardState();
@@ -39,7 +42,7 @@ class _AppointmentCardState extends State<AppointmentCard> {
 
   @override
   Widget build(BuildContext context) {
-    print(appointment);
+    // print(appointment);
     if (appointment["canceled"])
       return SizedBox.shrink();
     else if (DateTime.parse(appointment["test_date"]).isAfter(DateTime.now())) {
@@ -67,6 +70,7 @@ class _AppointmentCardState extends State<AppointmentCard> {
                 },
               ).then((value) => setState(() {
                     print("setstate works");
+                    widget.dummyFunc();
                   }));
             }
           },

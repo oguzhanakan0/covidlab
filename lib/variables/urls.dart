@@ -9,6 +9,8 @@ const String CANCEL_APPOINTMENT_URL = "/api/v1/labtest/cancel-appointment/";
 const String UPDATE_APPOINTMENT_URL = "/api/v1/labtest/update-appointment/";
 const String VERIFY_RESULT_URL = "/api/v1/labtest/verify/";
 const String GET_APPOINTMENTS_URL = "/api/v1/users/appointments/";
+const String GET_NOTIFS_URL = "/api/v1/users/notifications/";
+const String READ_NOTIFS_URL = "/api/v1/users/read-notifications/";
 const String MAKE_PAYMENT_URL = "/api/v1/labtest/make-payment/";
 // HOST
 const String HOST = 'http://127.0.0.1:8000'; // FOR IOS
